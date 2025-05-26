@@ -4,12 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movies</title>
+    <title>Filmovi</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        #content{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .card-body{
+            min-height: 200px;
+        }
+    </style>
 </head>
 
 <body data-bs-theme="dark">
@@ -40,35 +52,25 @@
                 </div>
             </div>
         </nav>
-        <table class="table table-hover table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">
-                        <i class="fa-solid fa-hashtag"></i>
-                    </th>
-                    <th scope="col">
-                        <i class="fa-solid fa-film"></i> Naziv
-                    </th>
-                    <th scope="col">
-                        <i class="fa-solid fa-envelope-open-text"></i> Kratak Opis
-                    </th>
-                    <th scope="col">
-                        <i class="fa-solid fa-user"></i> Reziser
-                    </th>
-                </tr>
-            </thead>
-            <tbody id="table"></tbody>
-        </table>
+        <div id="content" class="flex">
+
+        </div>
     </div>
     <template id="template">
-        <tr>
-            <th class="id" role="row"></th>
-            <td>
-                <a class="title"></a>
-            </td>
-            <td class="desc"></td>
-            <td class="director"></td>
-        </tr>
+        <div class="card" style="width: 18rem;">
+            <img src="#" class="card-img-top poster">
+            <div class="card-body">
+                <h5 class="card-title title"></h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary director"></h6>
+                <p class="card-text desc"></p>
+               
+            </div>
+            <div class="card-footer">
+                 <a href="#" class="btn btn-sm btn-primary details">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    Detalji</a>
+            </div>
+        </div>
     </template>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -76,22 +78,21 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-        const table = document.getElementById('table')
+        const content = document.getElementById('content')
         const template = document.getElementById('template')
 
         axios.get('https://movie.pequla.com/api/movie')
             .then(rsp => {
                 rsp.data.forEach(movie => {
                     const copy = template.content.cloneNode(true)
-                    copy.querySelector('.id').innerText = movie.movieId
-
-                    const title = copy.querySelector('.title')
-                    title.innerText = movie.title
-                    title.href = './movie.html?l=' + movie.shortUrl
-
+                    copy.querySelector('.title').innerText = movie.title
                     copy.querySelector('.desc').innerText = movie.shortDescription
                     copy.querySelector('.director').innerText = movie.director.name
-                    table.appendChild(copy)
+                    copy.querySelector('.poster').src = movie.poster
+                    copy.querySelector('.poster').alt = movie.title
+                    copy.querySelector('.details').href = "./movie.html?l=" + movie.shortUrl
+                    
+                    content.appendChild(copy)
                 })
             })
     </script>
