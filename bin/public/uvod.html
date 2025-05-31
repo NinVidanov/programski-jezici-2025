@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: monospace;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Programski Jezici</h1>
+    <script>
+        console.log('Hello World')
+
+        const konstanta = "neka vrednost"
+        // Ne sme konstati se dodeljivati nova vrednost
+        // konstanta = "nova vrednost"
+
+        let promenjivaLet = "neka vrednost"
+        promenjivaLet = "druga vrednost"
+        console.log(promenjivaLet)
+
+        var promenjivaVar = "neka var vrednost"
+        promenjivaVar = "neka druga var vrednost";
+
+        if (promenjivaLet.toLowerCase().includes('n')) {
+            console.log('Sadrzi slovo N')
+        } else if (promenjivaLet.toLowerCase().includes('z')) {
+            console.log('Sadrzi slovo Z')
+        } else {
+            console.log('Ne zadrzi slova N i Z...')
+        }
+
+        console.log(4 % 2 == 0 ? 'delljiv' : 'nije deljiv')
+
+        console.log(12 + "12")
+
+        const arr = ['hleb', 'mleko', 'med', 'novine']
+        arr.push('belo meso')
+
+        console.log(arr)
+
+        console.log('Standardni FOR ispis')
+        for (let i = 0; i < arr.length; i++) {
+            console.log(`${i + 1}) ${arr[i]}`)
+        }
+
+        console.log('FOR EACH - OF ispis')
+        for (let item of arr) {
+            console.log(item)
+        }
+
+        console.log ('FOR EACH - LAMBDA/FUNKCIONALNI ispis')
+        arr.forEach(item => {
+            console.log(item)
+        })
+    </script>
+</body>
+
+</html>

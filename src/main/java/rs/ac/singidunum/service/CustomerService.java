@@ -30,6 +30,7 @@ public class CustomerService {
     }
     
     public Customer saveCustomer(Customer customer) {
+    	customer.setCreatedAt(LocalDateTime.now());
     	return this.repo.save(customer);
     }
     

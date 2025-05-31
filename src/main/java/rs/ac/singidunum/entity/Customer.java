@@ -36,7 +36,6 @@ public class Customer {
 
     private String taxId;
 
-    @Column(nullable = false)
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
