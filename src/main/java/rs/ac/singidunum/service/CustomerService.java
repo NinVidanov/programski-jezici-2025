@@ -20,7 +20,7 @@ public class CustomerService {
     }
     
     public ResponseEntity<Customer> getCustomerById(Integer id){
-    	return ResponseEntity.of(this.repo.findById(id));
+    	return ResponseEntity.of(this.repo.findByIdAndDeletedAtIsNull(id));
     }
     
     public void deleteCustomerById( Integer id) {

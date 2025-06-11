@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Musterija</title>
+    <title>Projekcije</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
@@ -37,12 +37,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="./customer.html">
+                            <a class="nav-link" href="./customer.html">
                                 <i class="fa-solid fa-user"></i> Musterija
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="./projection.html">
+                            <a class="nav-link active" aria-current="page" href="./projection.html">
                                 <i class="fa-solid fa-calendar-days"></i> Projekcije
                             </a>
                         </li>
@@ -50,8 +50,8 @@
                 </div>
             </div>
         </nav>
-        <h3>Musterije</h3>
-        <a href="./new/customer.html" class="btn btn-sm btn-primary">Dadaj musteriju</a>
+        <h3>Projekcije</h3>
+        <a href="./new/projection.html" class="btn btn-sm btn-primary">Dadaj projekciju</a>
         <table class="table table-hover table-striped">
             <thead>
                 <tr>
@@ -59,19 +59,10 @@
                         <i class="fa-solid fa-hashtag"></i>
                     </th>
                     <th scope="col">
-                        <i class="fa-solid fa-signature"></i> Ime
+                        <i class="fa-solid fa-film"></i> Film
                     </th>
                     <th scope="col">
-                        <i class="fa-solid fa-envelope"></i> Email
-                    </th>
-                    <th scope="col">
-                        <i class="fa-solid fa-phone"></i> Telefon
-                    </th>
-                    <th scope="col">
-                        <i class="fa-solid fa-file-excel"></i> JMBG
-                    </th>
-                    <th scope="col">
-                        <i class="fa-solid fa-file-invoice-dollar"></i> PIB
+                        <i class="fa-solid fa-calendar-days"></i> Vreme
                     </th>
                     <th scope="col">
                         <i class="fa-solid fa-clock-torate-left"></i> Izmenjeno
@@ -87,15 +78,12 @@
     <template id="template">
         <tr>
             <th class="id" role="row"></th>
-            <td class="name"></td>
-            <td class="email"></td>
-            <td class="phone"></td>
-            <td class="umcn"></td>
-            <td class="tax"></td>
+            <td class="movie"></td>
+            <td class="time"></td>
             <td class="updated"></td>
             <td class="opcije">
                 <div class="btn-group">
-                    <a href="./new/customer.html" class="btn btn-sm btn-success edit" title="Izmeni"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <a href="./new/projection.html" class="btn btn-sm btn-success edit" title="Izmeni"><i class="fa-solid fa-pen-to-square"></i></a>
                     <button type="button" class="btn btn-sm btn-danger remove" title="Izbrisi"><i class="fa-solid fa-trash-can"></i></button>
                 </div>
             </td>
@@ -109,34 +97,31 @@
     <script>
         const table = document.getElementById('table')
         const template = document.getElementById('template')
-
-        axios.get('http:/localhost:8080/api/customer')
-            .then(rsp => {
-                console.log(rsp.data);
-                rsp.data.forEach(customer => {
+        async function loadData() {
+            const rsp = await axios.get('http:/localhost:8080/api/projection')
+            const ids = new Set()
+            rsp.data.map(p => p.movieId).forEach(id => ids.add(id))
+            const movies = {}
+            for (id of ids) {
+                const mrsp = await axios.get('https://movie.pequla.com/api/movie/' + id)
+                movies[id] = mrsp.data
+            }
+            for (projection of rsp.data) {
                     const copy = template.content.cloneNode(true)
-                    const name = `${customer.firstName} ${customer.lastName}`
-                    copy.querySelector('.id').innerText = customer.id
-                    copy.querySelector('.name').innerText = name
-                    copy.querySelector('.email').innerText = customer.email
-                    copy.querySelector('.phone').innerText = customer.phone
-                    copy.querySelector('.umcn').innerText = customer.umcn
-                    copy.querySelector('.tax').innerText = customer.taxId ?? 'N/A'
-                    copy.querySelector('.updated').innerText = new Date(customer.updatedAt ?? customer.createdAt).toLocaleString('sr-RS')
-                    copy.querySelector('.edit').href = "./edit/customer.html?id=" + customer.id
+                    copy.querySelector('.id').innerText = projection.id
+                    copy.querySelector('.movie').innerText =
+                     movies[projection.movieId] ? movies[projection.movieId].title : projection.movieId
+                    copy.querySelector('.time').innerText =
+                        new Date(projection.time).toLocaleString('sr-RS')
+                    copy.querySelector('.updated').innerText =
+                        new Date(projection.updatedAt ?? projection.createdAt).toLocaleString('sr-RS')
+                    copy.querySelector('.edit').href = '/edit/projection.html?id=' + projection.id
                     copy.querySelector('.remove').addEventListener('click', () => {
-                        if(!confirm(`Da li zelite da obrisete ${name}`)) return
-                        axios.request({
-                            url: `http:/localhost:8080/api/customer/${customer.id}`,
-                            method: 'delete'
-                        }).then(resp=> window.location.reload())
-                    
-                })
-
-                table.appendChild(copy)
-            })
+                    })
+                    table.appendChild(copy)
+                }
         }
-    )
+        loadData()
     </script>
 </body>
 
